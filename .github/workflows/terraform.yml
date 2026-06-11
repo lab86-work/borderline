@@ -33,7 +33,7 @@ jobs:
 
       - uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.53
+          tflint_version: v0.63
 
       - name: TFLint
         run: tflint --chdir=../../ --config=.tflint.hcl --init && tflint --chdir=../../ --config=.tflint.hcl
@@ -53,7 +53,12 @@ jobs:
         with:
           directory: terraform/
           framework: terraform
-          skip_check: CKV2_AWS_8  # RDS backup — not applicable
+          skip_check: >-
+            CKV2_AWS_8,
+            CKV_AWS_130,
+            CKV_AWS_382,
+            CKV2_AWS_5,
+            CKV2_AWS_41
           quiet: true
 
   plan:

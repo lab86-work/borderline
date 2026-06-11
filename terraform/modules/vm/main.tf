@@ -25,6 +25,8 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = [var.security_group_id]
   key_name               = aws_key_pair.this.key_name
   user_data              = var.user_data
+  monitoring             = true
+  ebs_optimized          = true
 
   root_block_device {
     volume_size = var.root_volume_size
