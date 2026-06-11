@@ -1,8 +1,33 @@
 # Borderline
 
-Terraform-based VPN deployment — launch a cloud VM, install a VPN, and generate
-credentials for Android / Google TV clients (or use it as a Linux proxy, or
-integrate with OPNsense).
+Terraform-based VPN deployment — launch an AWS EC2 instance, install WireGuard,
+and generate credentials for Android / Google TV clients.
+
+## Decision
+
+| Layer | Choice | Rationale |
+|-------|--------|-----------|
+| Provider | **AWS sa-east-1** | Only reliable option with Brazil region; t4g.nano at $0.0042/hr (~$3/mo) |
+| Instance | **t4g.nano** (ARM/Graviton, 2 vCPU, 0.5 GB) | Cheapest reliable VM in sa-east-1 |
+| VPN | **WireGuard** | Native Android TV app, OPNsense plugin, lowest overhead, QR code import |
+
+## Quick start
+
+```bash
+cd terraform/aws
+cp terraform.tfvars.example terraform.tfvars
+# edit terraform.tfvars with your SSH key
+terraform init
+terraform apply
+```
+
+After apply, retrieve the client config:
+
+```bash
+scp ubuntu@$(terraform output -raw vpn_server_ip):/opt/wireguard/clients/client.conf .
+# or for QR code (Android TV):
+scp ubuntu@$(terraform output -raw vpn_server_ip):/opt/wireguard/clients/client.qr ./client.png
+```
 
 ## Project structure
 
@@ -15,22 +40,17 @@ integrate with OPNsense).
 │       ├── aws/            — AWS provider evaluation
 │       ├── azure/          — Azure provider evaluation
 │       ├── google/         — Google Cloud provider evaluation
-│       └── oracle/         — Oracle Cloud provider evaluation
-└── terraform/              — (future) Terraform configurations
-    ├── aws/
-    ├── azure/
-    ├── google/
-    └── oracle/
+│       ├── oracle/         — Oracle Cloud provider evaluation
+│       ├── comparison.md   — side-by-side provider comparison
+│       └── vpn.md          — VPN solution evaluation
+└── terraform/
+    ├── modules/
+    │   ├── vpc/            — VPC, subnet, security group
+    │   ├── vm/             — EC2 instance, Elastic IP, SSH key
+    │   └── wireguard/      — cloud-init, config generation
+    └── aws/                — root Terraform config (AWS)
 ```
-
-## Goal
-
-1. Pick the **best cloud provider** for a single-VM, single-client VPN that can
-   stream HD TV.
-2. Pick the **best VPN solution** that works on Android TV / Google TV, as a
-   Linux SOCKS/HTTP proxy, or inside OPNsense.
-3. Automate everything with Terraform.
 
 ## Status
 
-Exploratory / research phase. No code yet.
+Terraform code written. Ready for validation / `terraform apply`.

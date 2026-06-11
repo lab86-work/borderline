@@ -32,16 +32,13 @@
 
 ## Provider decision
 
-To be determined by research. Initial candidates (reliability-weighted):
-- **Google Cloud e2-micro** — reliably available always-free tier, 100 GB free
-  egress, excellent global network. Front-runner.
-- **AWS Lightsail $3.50** — reliable, 1 TB included bandwidth, simple. Best
-  paid option.
-- **Azure B1s** — VM is always-free, but 15 GB free egress is too tight for
-  regular HD streaming.
-- **Oracle Cloud A1.Flex** — best specs on paper ($0, 4 OCPU, 24 GB, 10 TB
-  egress), but persistent capacity shortages make it unreliable for automated
-  provisioning. Not recommended.
+**AWS — sa-east-1 (São Paulo), t4g.nano ($0.0042/hr)**
+
+Rationale:
+- Brazil region required → GCP/Azure/Oracle always-free tiers not available or unreliable in Brazil.
+- t4g.nano at ~$3/mo is the cheapest reliable option in sa-east-1.
+- 100 GB free egress covers light HD streaming; beyond that, $0.09/GB is manageable.
+- Lightsail not available in Brazil, so standard EC2 with t4g.nano is the path.
 
 ## VPN decision
 

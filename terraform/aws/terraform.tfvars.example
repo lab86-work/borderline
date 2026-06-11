@@ -1,0 +1,15 @@
+# Rename to terraform.tfvars and fill in your values.
+
+name = "borderline"
+
+aws_region = "sa-east-1"
+
+instance_type = "t4g.nano"
+
+ssh_public_key = "ssh-ed25519 AAAAC3... your-public-key-here"
+
+# Restrict SSH to your IP only (required)
+allowed_ssh_cidrs = ["YOUR.IP.ADDRESS/32"]
+
+# Optional: path to your SSH private key for automatic config retrieval
+# ssh_private_key_path = "~/.ssh/id_ed25519"
