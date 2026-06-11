@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
+    }
   }
 }
 
@@ -13,9 +17,15 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "http" "my_ip" {
+  url = "https://ifconfig.me"
+}
+
 locals {
-  wireguard_port = 51820
-  vpn_subnet     = "10.8.0"
+  wireguard_port    = 51820
+  vpn_subnet        = "10.8.0"
+  caller_ip         = "${chomp(data.http.my_ip.response_body)}/32"
+  allowed_ssh_cidrs = var.allowed_ssh_cidrs != null ? var.allowed_ssh_cidrs : [local.caller_ip]
 }
 
 module "vpc" {
@@ -23,7 +33,7 @@ module "vpc" {
 
   name              = var.name
   wireguard_port    = local.wireguard_port
-  allowed_ssh_cidrs = var.allowed_ssh_cidrs
+  allowed_ssh_cidrs = local.allowed_ssh_cidrs
 }
 
 module "wireguard" {

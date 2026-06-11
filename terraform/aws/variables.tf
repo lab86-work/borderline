@@ -22,6 +22,7 @@ variable "ssh_public_key" {
 }
 
 variable "allowed_ssh_cidrs" {
-  description = "CIDR blocks allowed to SSH (required — set to YOUR_IP/32)"
+  description = "CIDR blocks allowed to SSH (defaults to your public IP via ifconfig.me)"
   type        = list(string)
+  default     = null
 }
