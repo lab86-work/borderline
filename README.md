@@ -25,9 +25,17 @@ After apply, retrieve the client config:
 
 ```bash
 scp ubuntu@$(terraform output -raw vpn_server_ip):/opt/wireguard/clients/client.conf .
-# or for QR code (Android TV):
+# or for QR code (Android TV / Google TV):
 scp ubuntu@$(terraform output -raw vpn_server_ip):/opt/wireguard/clients/client.qr ./client.png
 ```
+
+## Client setup guides
+
+| Client | Guide |
+|--------|-------|
+| Android phone | `doc/guides/android-phone.md` |
+| Google TV / Android TV | `doc/guides/google-tv.md` |
+| OPNsense | `doc/guides/opnsense.md` |
 
 ## Project structure
 
